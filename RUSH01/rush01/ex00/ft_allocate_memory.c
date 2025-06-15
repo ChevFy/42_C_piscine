@@ -6,13 +6,20 @@
 /*   By: npongtam <npongtam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 11:39:31 by npongtam          #+#    #+#             */
-/*   Updated: 2025/06/01 21:17:57 by npongtam         ###   ########.fr       */
+/*   Updated: 2025/06/01 23:32:59 by npongtam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
-char	**ft_allocate_permute(char **permute);
-char	*ft_make_number(int size);
+
+void	free_grid_i(int **grids)
+{
+	int	i;
+
+	i = -1;
+	while (++i < 4)
+		free(grids[i]);
+}
 
 int	**ft_allocate_grids(int **grids)
 {
@@ -21,13 +28,17 @@ int	**ft_allocate_grids(int **grids)
 
 	grids = malloc(sizeof(int *) * 4);
 	if (grids == NULL)
-		return (0);
+		return (NULL);
 	i = -1;
 	while (++i < 4)
 	{
 		grids[i] = malloc(sizeof(int) * 4);
 		if (grids[i] == NULL)
-			return (0);
+		{
+			free_grid_i(grids);
+			free(grids);
+			return (NULL);
+		}
 		j = -1;
 		while (++j < 4)
 			grids[i][j] = 0;
@@ -41,7 +52,10 @@ int	*ft_allocate_clues(int *clues)
 
 	clues = malloc(sizeof(int) * 16);
 	if (clues == NULL)
-		return (0);
+	{
+		free(clues);
+		return (NULL);
+	}
 	i = -1;
 	while (++i < 16)
 		clues[i] = 0;
@@ -68,9 +82,7 @@ int	*ft_allocate_clues(int *clues)
 
 // }
 
-
-
-void	free_all(int **grids, int *clues, char **permute, char *number)
+int	free_all(int **grids, int *clues, char **permute, char *number)
 {
 	int	i;
 
@@ -84,4 +96,5 @@ void	free_all(int **grids, int *clues, char **permute, char *number)
 		free(permute[i]);
 	free(permute);
 	free(number);
+	return (1);
 }
